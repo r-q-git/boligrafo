@@ -7,7 +7,7 @@
         pButton
         icon="pi pi-bars"
         (click)="toggleSettings()"
-        [ngClass]="{'p-button-secondary': !showSettings}"
+        [ngClass]="{ 'p-button-secondary': !showSettings }"
         title="Toggle Settings"
       ></button>
     </div>
@@ -130,7 +130,8 @@
 
       <div class="flex flex-column gap-3 mb-4">
         <div class="flex align-items-center gap-2">
-          <label class="w-5rem">Size</label>
+          <i class="pi pi-expand"></i>
+          <label class="w-5rem">Size </label>
           <input
             type="range"
             min="1"
@@ -143,6 +144,7 @@
           }}</span>
         </div>
         <div class="flex align-items-center gap-2">
+          <i class="pi pi-percentage"></i>
           <label class="w-5rem">Thinning</label>
           <input
             type="range"
@@ -157,6 +159,7 @@
           }}</span>
         </div>
         <div class="flex align-items-center gap-2">
+          <i class="pi pi-wave-pulse"></i>
           <label class="w-5rem">Streamline</label>
           <input
             type="range"
@@ -171,6 +174,7 @@
           }}</span>
         </div>
         <div class="flex align-items-center gap-2">
+          <i class="pi pi-sparkles"></i>
           <label class="w-5rem">Smoothing</label>
           <input
             type="range"
@@ -185,6 +189,7 @@
           }}</span>
         </div>
         <div class="flex align-items-center gap-2">
+          <i class="pi pi-sort-alt"></i>
           <label class="w-5rem">Easing</label>
           <select
             [(ngModel)]="tools[activeTool].easing"
@@ -201,6 +206,7 @@
 
       <div class="flex flex-column gap-3 my-4">
         <div class="flex align-items-center gap-2">
+          <i class="pi pi-step-backward"></i>
           <label class="w-5rem">Taper Start</label>
           <input
             type="range"
@@ -214,6 +220,7 @@
           }}</span>
         </div>
         <div class="flex align-items-center gap-2">
+          <i class="pi pi-sort-alt"></i>
           <label class="w-5rem">Easing Start</label>
           <select
             [(ngModel)]="tools[activeTool].start.easing"
@@ -230,6 +237,7 @@
 
       <div class="flex flex-column gap-3 my-4">
         <div class="flex align-items-center gap-2">
+          <i class="pi pi-step-forward"></i>
           <label class="w-5rem">Taper End</label>
           <input
             type="range"
@@ -243,6 +251,7 @@
           }}</span>
         </div>
         <div class="flex align-items-center gap-2">
+          <i class="pi pi-sort-alt"></i>
           <label class="w-5rem">Easing End</label>
           <select
             [(ngModel)]="tools[activeTool].end.easing"
@@ -259,6 +268,7 @@
 
       <div class="flex flex-column gap-3 mt-4">
         <div class="flex align-items-center justify-content-between">
+          <i class="pi pi-palette"></i>
           <label>Fill Color</label>
           <input
             type="color"
@@ -267,6 +277,7 @@
           />
         </div>
         <div class="flex align-items-center gap-2">
+          <i class="pi pi-minus"></i>
           <label class="w-5rem">Stroke</label>
           <input
             type="range"
@@ -280,6 +291,7 @@
           }}</span>
         </div>
         <div class="flex align-items-center justify-content-between">
+          <i class="pi pi-pencil"></i>
           <label>Stroke Color</label>
           <input
             type="color"

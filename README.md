@@ -1,27 +1,342 @@
-# Freehandcanvas
+## Boligrafo – Freehand SVG Drawing Engine
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.16.
+Boligrafo is a powerful **freehand drawing application** built with Angular that enables smooth, pressure-sensitive strokes rendered as SVG paths. It supports multiple tools, real-time stroke preview, SVG import/export, and seamless integration with external applications via iframe messaging.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🚀 Features
 
-## Code scaffolding
+### 🖊️ Drawing Engine
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Smooth freehand drawing powered by `perfect-freehand`
+- Pressure-sensitive strokes
+- Real-time preview rendering
+- SVG-based vector output
 
-## Build
+### 🎨 Tools
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- **Pen 1** – stylized smooth pen
+- **Pen 2** – alternate stroke feel
+- **Highlighter** – semi-transparent strokes
+- **Eraser** – proximity-based stroke removal
 
-## Running unit tests
+### ⚙️ Customization
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- Stroke size, thinning, smoothing, streamline
+- Start/end taper controls
+- Easing functions (custom curve behavior)
+- Fill color & stroke outline
 
-## Running end-to-end tests
+### 📂 File Support
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- Import SVG → converts into editable strokes
+- Export SVG → download drawings
+- Drag & drop support
 
-## Further help
+### 🔄 History
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- Undo / Redo support
+
+### 🔗 Integration
+
+- Send drawing as Base64 SVG to parent app
+- Receive SVG from parent via iframe messaging
+
+---
+
+## 🏗️ Tech Stack
+
+- **Framework:** Angular
+- **UI:** PrimeNG
+- **Drawing Engine:** perfect-freehand
+- **Rendering:** SVG
+- **Language:** TypeScript
+
+---
+
+## 📁 Project Structure
+
+```
+src/app
+├── drawing/           # Core drawing logic + UI
+├── models/            # Type definitions
+├── services/          # Iframe communication
+├── utils/             # Stroke, SVG, easing utilities
+├── app.component      # Root component
+└── app.module.ts      # Module configuration
+```
+
+---
+
+## 🧠 Core Concepts
+
+### 1. Stroke System
+
+Each stroke is stored as:
+
+```ts
+interface DrawingStroke {
+  points: number[][];
+  path: string;
+  color: string;
+  opacity: number;
+  outlineColor: string;
+  outlineWidth: number;
+}
+```
+
+- `points` → raw pointer data
+- `path` → generated SVG path
+- Used for rendering + erasing logic
+
+---
+
+### 2. Drawing Flow
+
+```
+Pointer Down → Start stroke
+Pointer Move → Collect points → Generate stroke → Preview
+Pointer Up   → Finalize stroke → Store in state
+```
+
+---
+
+### 3. Stroke Generation
+
+Pipeline:
+
+```
+Raw Points → perfect-freehand → Stroke Points → SVG Path
+```
+
+Handled via:
+
+- `getStroke()` → generates smooth stroke
+- `getSvgPathFromStroke()` → converts to SVG path
+
+---
+
+### 4. Tool System
+
+Each tool defines:
+
+```ts
+{
+  (size, thinning, smoothing, streamline, easing, start, end, outline);
+}
+```
+
+Generated using:
+
+- `getDefaultToolPen1`
+- `getDefaultToolPen2`
+- `getDefaultToolHighlighter`
+
+---
+
+### 5. Eraser Logic
+
+- Checks distance between cursor and stroke points
+- Removes stroke if within threshold
+
+```ts
+Math.hypot(p[0] - x, p[1] - y) < eraser.size;
+```
+
+---
+
+### 6. SVG Import/Export
+
+#### Export:
+
+- Serialize SVG
+- Convert to Base64
+- Download or send to parent
+
+#### Import:
+
+- Parse `<path>` elements
+- Extract `d` attribute
+- Reconstruct points (approximation)
+
+---
+
+### 7. Iframe Communication
+
+#### Send to Parent:
+
+```ts
+window.parent.postMessage(...)
+```
+
+Payload:
+
+```ts
+{
+  type: ADD_OBJECT,
+  payload: {
+    dataString: base64SVG,
+    type: 'stickerbox',
+    metaData
+  }
+}
+```
+
+#### Receive from Parent:
+
+- Listens to `window.message`
+- Imports Base64 SVG
+
+---
+
+## 🖥️ UI Overview
+
+### Top Toolbar
+
+- Tool selection
+- Undo / Redo
+- Upload / Download
+- Clear canvas
+- Send to project
+
+### Side Panel
+
+- Tool customization
+- Sliders + easing selection
+- Color pickers
+
+### Canvas
+
+- Fullscreen SVG
+- Pointer-based drawing
+
+---
+
+## ⚡ Getting Started
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Run Development Server
+
+```bash
+ng serve
+```
+
+### Build
+
+```bash
+ng build
+```
+
+---
+
+## 📌 Future Improvements
+
+- Layer system
+- Selection & transform tools
+- Lasso tool
+- Stroke editing (control points)
+- Pressure simulation for mouse
+- Performance optimization for large drawings
+
+---
+
+## 🧩 Key Utilities
+
+| Utility                | Purpose                 |
+| ---------------------- | ----------------------- |
+| `getStroke`            | Stroke generation       |
+| `getSvgPathFromStroke` | SVG path conversion     |
+| `parseSVGFile`         | Import SVG              |
+| `saveSVG`              | Export SVG              |
+| `captureSvgAsBase64`   | Convert to Base64       |
+| `EASINGS`              | Stroke animation curves |
+
+---
+
+## 📜 License
+
+MIT License
+
+---
+
+# 🏗️ Architecture Diagram
+
+Here’s a clean conceptual architecture of your system:
+
+```
+                        ┌──────────────────────────┐
+                        │     Parent Application   │
+                        │ (Iframe Host / Editor)   │
+                        └──────────┬───────────────┘
+                                   │ postMessage
+                                   ▼
+                    ┌──────────────────────────────┐
+                    │   QlIframeMessageService     │
+                    └──────────┬───────────────────┘
+                               │
+                               ▼
+                    ┌──────────────────────────────┐
+                    │      DrawingComponent        │
+                    │  (Core Controller Layer)     │
+                    └──────────┬───────────────────┘
+                               │
+        ┌──────────────────────┼────────────────────────┐
+        ▼                      ▼                        ▼
+┌───────────────┐   ┌───────────────────┐   ┌────────────────────┐
+│ Pointer Input │   │ Stroke Engine     │   │ Tool Configuration │
+│ (Mouse/Touch) │   │ (perfect-freehand)│   │ (Pen, Highlighter) │
+└──────┬────────┘   └────────┬──────────┘   └────────┬───────────┘
+       │                     │                       │
+       ▼                     ▼                       ▼
+   Raw Points        Stroke Points             Tool Settings
+       │                     │                       │
+       └──────────────┬──────┴──────────────┬────────┘
+                      ▼                     ▼
+             ┌────────────────────────────────────┐
+             │        SVG Path Generator          │
+             │  getSvgPathFromStroke()            │
+             └────────────────────────────────────┘
+                               │
+                               ▼
+                    ┌──────────────────────────┐
+                    │       SVG Renderer       │
+                    │   (<svg> + <path>)       │
+                    └──────────┬───────────────┘
+                               │
+       ┌───────────────────────┼─────────────────────────┐
+       ▼                       ▼                         ▼
+┌──────────────┐     ┌──────────────────┐      ┌────────────────────┐
+│ Undo/Redo    │     │ Import/Export    │      │ Base64 Conversion  │
+│ State Stack  │     │ parse/save SVG   │      │ captureSvgAsBase64 │
+└──────────────┘     └──────────────────┘      └────────────────────┘
+```
+
+---
+
+## 🧠 High-Level Layers
+
+1. **UI Layer**
+   - Toolbar + settings panel
+   - SVG canvas
+
+2. **Interaction Layer**
+   - Pointer events
+   - Tool switching
+
+3. **Processing Layer**
+   - Stroke generation
+   - Path conversion
+   - Eraser logic
+
+4. **Data Layer**
+   - Stroke state
+   - Undo/redo stacks
+
+5. **Integration Layer**
+   - Iframe messaging
+   - Base64 export/import
